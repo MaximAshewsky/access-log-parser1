@@ -1,14 +1,15 @@
 public class Main {
     public static void main(String[] args) {
         Point p1 = new Point(1, 3);
-        Point p2 = new Point(1, 3);//В задании просят вывести оба сравнения false, хотя у нас три точки и сравнения должно быть три. Если прописать  Point p2 = p1, то в первом сравнении выведится true
-        Point p3 = new Point(5, 8);
-        System.out.println(p1);
-        System.out.println(p2);
-        System.out.println(p3);
-        System.out.println(p1 == p2);
-        System.out.println(p1 == p3);
-        System.out.println(p2 == p3);
+        Point p2 = new Point(9, 15);
+        Point p3 = new Point(22, 33);
+        Point p4 = new Point(15, 19);
+        Line l1 = new Line (p1, p2);
+        Line l2 = new Line (p3, p4);
+        Line l3 = new Line (p2, p3);
+        System.out.println(l3);
+        double line = l1.getLength() + l2.getLength() + l3.getLength();
+        System.out.println("Суммарная длинна всех трех линий: " + line);
     }
 }
 
