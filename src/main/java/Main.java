@@ -1,31 +1,14 @@
-import java.io.File;
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
-        int n = 0;
-        for (; ; ) {
-            System.out.println("Укажите путь до файла");
-            String path = new Scanner(System.in).nextLine();
-
-            File file = new File(path);
-            boolean fileExists = file.exists();
-            boolean isDirectory = file.isDirectory();
-
-            if (!file.exists()) {
-                System.out.println("Путь указан неверно");
-                continue;
-            }
-            if (isDirectory) {
-                System.out.println("Это путь до папки");
-                continue;
-            }
-            if (file.exists() && file.isFile()) {
-                n++;
-                System.out.println("Путь указан верно. Этот файл номер " + n);
-            }
-
-        }
+        Point p1 = new Point(1, 3);
+        Point p2 = new Point(1, 3);//В задании просят вывести оба сравнения false, хотя у нас три точки и сравнения должно быть три. Если прописать  Point p2 = p1, то в первом сравнении выведится true
+        Point p3 = new Point(5, 8);
+        System.out.println(p1);
+        System.out.println(p2);
+        System.out.println(p3);
+        System.out.println(p1 == p2);
+        System.out.println(p1 == p3);
+        System.out.println(p2 == p3);
     }
 }
 
