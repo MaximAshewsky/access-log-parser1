@@ -10,7 +10,8 @@ public class Line {
     @Override
     public String toString() {
         return "Линия от " + start +
-                ", до " + end;
+                ", до " + end
+                ;
     }
 
     public double getLength() {
