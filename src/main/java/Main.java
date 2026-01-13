@@ -1,34 +1,14 @@
 public class Main {
     public static void main(String[] args) {
-        Point p1 = new Point(1, 5);
-        Point p2 = new Point(12, 8);
-        Point p3 = new Point(5, 3);
-        Point p4 = new Point(8, 9);
-        PolyLine pl = new PolyLine(new Point[]{p1, p2, p3, p4});
-        System.out.println(pl);// создали ломаную
-        double line = pl.getLength();
-        System.out.println("Длинна ломоной: " + line);// длина ломаной
-        Line[] segments = pl.getLines();
-        System.out.println("Массив линий:");// массив линий
-        for (int i = 0; i < segments.length; i++) {
-            Line segment = segments[i];
-            System.out.println("  Линия " + i + ": " + segments[i]);
-        }
-            double segmentsTotalLength = 0;
-            for (int i = 0; i < segments.length; i++) {
-                segmentsTotalLength += segments[i].getLength();
-            }
-                System.out.println("Суммарная длинна линий:" + segmentsTotalLength);// суммарная длина массива линий
+        Fraction f1 = new Fraction(1,3);
+        Fraction f2 = new Fraction(2,5);
+        Fraction f3 = new Fraction(7,8);
+        Fraction result = f1.sum(f2).sum(f3).minus(5);
+        System.out.println("Результат = " + result);
 
-            //сравнение
-        if (Math.abs(line - segmentsTotalLength) < 1e-9) {
-            System.out.println("Длины совпадают");
-        } else {
-            System.out.println("Длины НЕ совпадают!");
-        }
 
-        }
     }
+}
 
 
 
