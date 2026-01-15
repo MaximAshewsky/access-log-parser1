@@ -1,12 +1,19 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        Fraction f1 = new Fraction(1,3);
-        Fraction f2 = new Fraction(2,5);
-        Fraction f3 = new Fraction(7,8);
-        Fraction result = f1.sum(f2).sum(f3).minus(5);
-        System.out.println("Результат = " + result);
-
-
+        List<Integer>grades = new ArrayList<>();
+        grades.add(5);
+        grades.add(4);
+        grades.add(5);
+        grades.add(3);
+        Student student = new Student("Максим", grades);
+        System.out.println(student);
+        student.addGrade(5);
+        System.out.println(student);
+        Student student2 = new Student("Таня", null);
+        System.out.println(student2);
     }
 }
 
