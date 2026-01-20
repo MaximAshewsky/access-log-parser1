@@ -4,6 +4,7 @@ import java.util.List;
 public class PolyLine {
     public List<Point> points;
 
+
     public PolyLine() {
         this.points = new ArrayList<>();
     }
@@ -16,12 +17,16 @@ public class PolyLine {
             }
         }
     }
+    public List<Point> getPoints() {
+        return new ArrayList<>(points);
+    }
 
     @Override
     public String toString() {
         return "Ломаная: " +
                 "Координаты точек ломаной " + points;
     }
+
     public Line[] getLines() {
         if (points.size() < 2) {
             return new Line[0];
@@ -33,6 +38,7 @@ public class PolyLine {
         }
         return lines;
     }
+
     public double getLength() {
         double totalLength = 0.0;
         Line[] lines = getLines();
@@ -42,4 +48,34 @@ public class PolyLine {
         return totalLength;
     }
 }
+
+class ClosedPolyLine extends PolyLine {
+    public ClosedPolyLine(Point[] points) {
+        super(points);
+    }
+
+    public Line[] getLines() {
+        List<Point> allPoints = getPoints();
+        if (allPoints.size() < 2) return new Line[0];
+
+        Line[] lines = new Line[allPoints.size()];
+        for (int i = 0; i < allPoints.size() - 1; i++) {
+            lines[i] = new Line(allPoints.get(i), allPoints.get(i + 1));
+        }
+        lines[allPoints.size() - 1] = new Line(
+                allPoints.get(allPoints.size() - 1),
+                allPoints.get(0)
+        );
+        return lines;
+    }
+
+    @Override
+    public double getLength() {
+        double sum = 0.0;
+        for (Line line : getLines()) sum += line.getLength();
+        return sum;
+    }
+}
+
+
 

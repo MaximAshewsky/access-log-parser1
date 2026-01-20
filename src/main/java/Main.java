@@ -2,12 +2,15 @@ public class Main {
     public static void main(String[] args) {
         Point p1 = new Point(1, 5);
         Point p2 = new Point(12, 8);
-        Point p3 = new Point(5, 3);
+        Point p3 = new Point(6, 3);
         Point p4 = new Point(8, 9);
         PolyLine pl = new PolyLine(new Point[]{p1, p2, p3, p4});
+        ClosedPolyLine cpl = new ClosedPolyLine(new Point[]{p1, p2, p3, p4});
         System.out.println(pl);// создали ломаную
         double line = pl.getLength();
+        double line1 = cpl.getLength();
         System.out.println("Длинна ломоной: " + line);// длина ломаной
+        System.out.println("Длинна замкнутой: " + line1);
         Line[] segments = pl.getLines();
         System.out.println("Массив линий:");// массив линий
         for (int i = 0; i < segments.length; i++) {
