@@ -8,13 +8,23 @@ class Point {
         this.x = x;
         this.y = y;
     }
+}
+    class Point3D extends Point{
+        int z;
 
-    @Override
-    public String toString() {
-        return "Point{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        public Point3D(int x, int y, int z) {
+            super(x, y);
+            this.z = z;
+        }
+
+        @Override
+        public String toString() {
+            return "Point3D{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    ", z=" + z +
+                    '}';
+        }
     }
 
-}
+
