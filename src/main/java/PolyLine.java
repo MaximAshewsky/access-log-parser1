@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PolyLine {
-    public List<Point> points;
+    private final List<Point> points;
 
 
     public PolyLine() {
@@ -17,6 +17,7 @@ public class PolyLine {
             }
         }
     }
+
     public List<Point> getPoints() {
         return new ArrayList<>(points);
     }
@@ -55,7 +56,7 @@ class ClosedPolyLine extends PolyLine {
     }
 
     public Line[] getLines() {
-        List<Point> allPoints = getPoints();
+        List<Point> allPoints = super.getPoints();
         if (allPoints.size() < 2) return new Line[0];
 
         Line[] lines = new Line[allPoints.size()];
