@@ -1,4 +1,7 @@
 public class Main {
+    public static double m(Measurable m) {
+        return m.getLength();
+    }
     public static void main(String[] args) {
         Point p1 = new Point(1, 5);
         Point p2 = new Point(12, 8);
@@ -11,6 +14,8 @@ public class Main {
         double line1 = cpl.getLength();
         System.out.println("Длинна ломоной: " + line);// длина ломаной
         System.out.println("Длинна замкнутой: " + line1);
+        System.out.println("Длинна ломоной интерфейс: " + m(pl));
+        System.out.println("Длинна замкнутой интерфейс: " + m(cpl));
         Line[] segments = pl.getLines();
         System.out.println("Массив линий:");// массив линий
         for (int i = 0; i < segments.length; i++) {

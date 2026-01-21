@@ -1,10 +1,18 @@
-public class Line {
-    Point start;
-    Point end;
+public class Line implements Measurable {
+    private final Point start;
+    private final Point end;
 
     public Line(Point start, Point end) {
         this.start = start;
         this.end = end;
+    }
+
+    public Point getStart() {
+        return start;
+    }
+
+    public Point getEnd() {
+        return end;
     }
 
     @Override
@@ -15,8 +23,8 @@ public class Line {
     }
 
     public double getLength() {
-        double ax = end.x - start.x;
-        double ay = end.y - start.y;
+        double ax = end.getX() - start.getX();
+        double ay = end.getY() - start.getY();
         return Math.sqrt(ax * ax + ay * ay);
     }
 
