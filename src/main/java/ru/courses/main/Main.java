@@ -1,4 +1,4 @@
-package ru.courses;
+package ru.courses.main;
 import ru.courses.geometry.*;
 
 public class Main {
