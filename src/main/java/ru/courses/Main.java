@@ -1,3 +1,6 @@
+package ru.courses;
+import ru.courses.geometry.*;
+
 public class Main {
     public static double m(Measurable m) {
         return m.getLength();

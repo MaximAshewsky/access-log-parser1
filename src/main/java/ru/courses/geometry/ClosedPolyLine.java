@@ -1,6 +1,8 @@
+package ru.courses.geometry;
+
 import java.util.List;
 
-class ClosedPolyLine extends PolyLine {
+public class ClosedPolyLine extends PolyLine {
     public ClosedPolyLine(Point[] points) {
         super(points);
     }
