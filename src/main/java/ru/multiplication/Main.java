@@ -1,3 +1,5 @@
+package ru.multiplication;
+import ru.multiplication.degree.PowerCalculator;
 import java.util.Scanner;
 
 public class Main {

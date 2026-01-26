@@ -1,3 +1,5 @@
+package ru.multiplication.degree;
+
 import static java.lang.Integer.parseInt;
 import static java.lang.Math.pow;
 
