@@ -49,4 +49,10 @@ public class Line implements Cloneable {
             throw new RuntimeException("Клонирование точки не поддерживается", e);
         }
     }
+    public double getLength() {
+        double ax = end.getX() - start.getX();
+        double ay = end.getY() - start.getY();
+        return Math.sqrt(ax * ax + ay * ay);
+    }
+
 }
