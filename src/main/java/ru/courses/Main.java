@@ -1,43 +1,15 @@
 package ru.courses;
-
 import ru.courses.geometry.*;
 
 public class Main {
     public static void main(String[] args) {
-        Point p1 = new Point(1, 5);
-        Point p2 = new Point(12, 8);
-        Point p3 = new Point(6, 3);
-        Point p4 = new Point(8, 9);
-        PolyLine pl = new PolyLine(new Point[]{p1, p2, p3, p4});
-        PolyLine pl2 = new PolyLine(new Point[]{p1, p2, p3, p4});
-        System.out.println(pl.equals(pl2));
-        System.out.println(pl == pl2);
-//        System.out.println(pl);// создали ломаную
-//        double line = pl.getLength();
-//        System.out.println("Длинна ломоной: " + line);// длина ломаной
-//        Line[] segments = pl.getLines();
-//        System.out.println("Массив линий:");// массив линий
-//        for (int i = 0; i < segments.length; i++) {
-//            Line segment = segments[i];
-//            System.out.println("  Линия " + i + ": " + segments[i]);
-//        }
-//        double segmentsTotalLength = 0;
-//        for (int i = 0; i < segments.length; i++) {
-//            segmentsTotalLength += segments[i].getLength();
-//        }
-//        System.out.println("Суммарная длинна линий:" + segmentsTotalLength);// суммарная длина массива линий
-//
-//        //сравнение
-//        if (Math.abs(line - segmentsTotalLength) < 1e-9) {
-//            System.out.println("Длины совпадают");
-//        } else {
-//            System.out.println("Длины НЕ совпадают!");
-//        }
-
+        Sauce s1 = new Sauce("Шрирача", Sauce.Sharpness.VERY_SHARP);
+        Sauce s2 = new Sauce("Горчица", Sauce.Sharpness.SHARP);
+        Sauce s3 = new Sauce("Кетчуп", Sauce.Sharpness.NOT_SHARP);
+//        Sauce s4 = new Sauce("Лалала", null);
+//        Sauce s5 = new Sauce("", Sauce.Sharpness.VERY_SHARP);
+        System.out.println(s1);
+        System.out.println(s2);
+        System.out.println(s3);
     }
 }
-
-
-
-
-
