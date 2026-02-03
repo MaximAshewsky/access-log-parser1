@@ -6,6 +6,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         int n = 0;
+        int googleBotCount = 0;
+        int yandexBotCount = 0;
+        int totalBotChecks = 0;
         for (; ; ) {
             System.out.println("Укажите путь до файла");
             String path = new Scanner(System.in).nextLine();
@@ -32,31 +35,55 @@ public class Main {
                 BufferedReader reader = new BufferedReader(fileReader);
                 String line;
                 int totalLines = 0;
-                int maxLength = 0;
-                int minLength = Integer.MAX_VALUE;
                 while ((line = reader.readLine()) != null) {
                     int length = line.length();
-
                     totalLines++;
-//                    System.out.println("Строка " + totalLines + ": " + length + " символов");
-//                    по заданию не очень понятно нужно ли чтобы был вывод каждой строки и колличество символов в этих строках, но на всякий я добавил такой вывод
                     if (length > 1024) {
                         throw new LineTooLongException(
                                 "Обнаружена строка длиной " + length + " символов. " +
                                         "Максимальное допустимое значение — 1024 символа."
                         );
                     }
-                    if (length > maxLength) {
-                        maxLength = length;
-                    }
-                    if (length < minLength) {
-                        minLength = length;
+                    try {
+                        LogEntry entry = new LogEntry(line);
+//                        System.out.println("Строка " + totalLines + ":");
+//                        System.out.println("  IP: " + entry.getIp());
+//                        System.out.println("  Пропущенное поле 1: " + entry.getDash1());
+//                        System.out.println("  Пропущенное поле 2: " + entry.getDash2());
+//                        System.out.println("  Дата и время: " + entry.getTimestamp());
+//                        System.out.println("  Запрос: " + entry.getRequest());
+//                        System.out.println("  HTTP-код: " + entry.getHttpCode());
+//                        System.out.println("  Размер (байты): " + entry.getBytes());
+//                        System.out.println("  Referer: " + entry.getReferer());
+//                        System.out.println("  User-Agent: " + entry.getUserAgent());
+//                        System.out.println();
+                        String botName = entry.extractBotName();
+                        if (botName != null) {
+                            totalBotChecks++;
+                            if (botName.equals("Googlebot")) {
+                                googleBotCount++;
+                            } else if (botName.equals("YandexBot")) {
+                                yandexBotCount++;
+                            }
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Ошибка разбора строки " + totalLines + ": " + e.getMessage());
                     }
                 }
                 reader.close();
-                System.out.println("Общее количество строк: " + totalLines);
-                System.out.println("Длина самой длинной строки: " + maxLength);
-                System.out.println("Длина самой короткой строки: " + minLength);
+                System.out.println("Общее количество строк (запросов): " + totalLines);
+                System.out.println("Итого:");
+                System.out.println("Всего проанализировано User-Agent с потенциальными ботами: " + totalBotChecks);
+                System.out.println("Запросы от Googlebot: " + googleBotCount);
+                System.out.println("Запросы от YandexBot: " + yandexBotCount);
+
+
+                if (totalBotChecks > 0) {
+                    double googleShare = (double) googleBotCount / totalLines * 100;
+                    double yandexShare = (double) yandexBotCount / totalLines * 100;
+                    System.out.printf("Доля запросов от Googlebot ко всем запросам: %.2f%%\n", googleShare);
+                    System.out.printf("Доля запросов от YandexBot ко всем запросам: %.2f%%\n", yandexShare);
+                }
             } catch (LineTooLongException ex) {
                 System.err.println("Ошибка: " + ex.getMessage());
                 return;
