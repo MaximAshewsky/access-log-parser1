@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -6,6 +7,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         int n = 0;
+
         int googleBotCount = 0;
         int yandexBotCount = 0;
         int totalBotChecks = 0;
@@ -19,6 +21,7 @@ public class Main {
 
             if (!file.exists()) {
                 System.out.println("Путь указан неверно");
+
                 continue;
             }
             if (isDirectory) {
@@ -35,28 +38,30 @@ public class Main {
                 BufferedReader reader = new BufferedReader(fileReader);
                 String line;
                 int totalLines = 0;
+                Statistics stats = new Statistics();
                 while ((line = reader.readLine()) != null) {
                     int length = line.length();
                     totalLines++;
                     if (length > 1024) {
-                        throw new LineTooLongException(
+                        throw new RuntimeException(
                                 "Обнаружена строка длиной " + length + " символов. " +
                                         "Максимальное допустимое значение — 1024 символа."
                         );
                     }
                     try {
                         LogEntry entry = new LogEntry(line);
-//                        System.out.println("Строка " + totalLines + ":");
-//                        System.out.println("  IP: " + entry.getIp());
-//                        System.out.println("  Пропущенное поле 1: " + entry.getDash1());
-//                        System.out.println("  Пропущенное поле 2: " + entry.getDash2());
-//                        System.out.println("  Дата и время: " + entry.getTimestamp());
-//                        System.out.println("  Запрос: " + entry.getRequest());
-//                        System.out.println("  HTTP-код: " + entry.getHttpCode());
-//                        System.out.println("  Размер (байты): " + entry.getBytes());
-//                        System.out.println("  Referer: " + entry.getReferer());
-//                        System.out.println("  User-Agent: " + entry.getUserAgent());
-//                        System.out.println();
+                        stats.addEntry(entry);
+                        System.out.println("Строка " + totalLines + ":");
+                        System.out.println("  IP: " + entry.getIp());
+                        System.out.println("  Пропущенное поле 1: " + entry.getDash1());
+                        System.out.println("  Пропущенное поле 2: " + entry.getDash2());
+                        System.out.println("  Дата и время: " + entry.getTimestamp());
+                        System.out.println("  Запрос: " + entry.getRequest());
+                        System.out.println("  HTTP-код: " + entry.getHttpCode());
+                        System.out.println("  Размер (байты): " + entry.getBytes());
+                        System.out.println("  Referer: " + entry.getReferer());
+                        System.out.println("  User-Agent: " + entry.getUserAgent());
+                        System.out.println();
                         String botName = entry.extractBotName();
                         if (botName != null) {
                             totalBotChecks++;
@@ -77,14 +82,14 @@ public class Main {
                 System.out.println("Запросы от Googlebot: " + googleBotCount);
                 System.out.println("Запросы от YandexBot: " + yandexBotCount);
 
-
                 if (totalBotChecks > 0) {
                     double googleShare = (double) googleBotCount / totalLines * 100;
                     double yandexShare = (double) yandexBotCount / totalLines * 100;
                     System.out.printf("Доля запросов от Googlebot ко всем запросам: %.2f%%\n", googleShare);
                     System.out.printf("Доля запросов от YandexBot ко всем запросам: %.2f%%\n", yandexShare);
                 }
-            } catch (LineTooLongException ex) {
+                System.out.println("Средний трафик за час: " + stats.getTrafficRate() + " байт/час");
+            } catch (RuntimeException ex) {
                 System.err.println("Ошибка: " + ex.getMessage());
                 return;
             } catch (Exception ex) {

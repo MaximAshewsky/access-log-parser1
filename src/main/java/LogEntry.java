@@ -1,16 +1,25 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LogEntry {
+    public enum HttpMethod {
+        GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, CONNECT
+    }
+
     private final String ip;
     private final String dash1;
     private final String dash2;
-    private final String timestamp;
+    private final LocalDateTime timestamp;
     private final String request;
-    private final String httpCode;
-    private final String bytes;
+    private final HttpMethod httpMethod;
+    private final int httpCode;
+    private final long bytes;
     private final String referer;
     private final String userAgent;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z", java.util.Locale.ENGLISH);
 
     public LogEntry(String line) {
         String regex = "^(\\S+)\\s+(-|-|\\S+)\\s+(-|-|\\S+)\\s+\\[([^]]+)\\]\\s+\"([^\"]+)\"\\s+(\\d+)\\s+(\\d+)\\s+\"([^\"]*)\"\\s+\"([^\"]*)\"$";
@@ -21,10 +30,18 @@ public class LogEntry {
             this.ip = matcher.group(1);
             this.dash1 = matcher.group(2);
             this.dash2 = matcher.group(3);
-            this.timestamp = matcher.group(4);
+            String timestampStr = matcher.group(4);
+            try {
+                this.timestamp = LocalDateTime.parse(timestampStr, DATE_TIME_FORMATTER);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Неверный формат даты: " + timestampStr, e);
+            }
             this.request = matcher.group(5);
-            this.httpCode = matcher.group(6);
-            this.bytes = matcher.group(7);
+            String methodStr = this.request.split("\\s+")[0];
+            this.httpMethod = HttpMethod.valueOf(methodStr);
+            this.httpCode = Integer.parseInt(matcher.group(6));
+            String bytesStr = matcher.group(7);
+            this.bytes = bytesStr.isEmpty() ? 0L : Long.parseLong(bytesStr);
             this.referer = matcher.group(8);
             this.userAgent = matcher.group(9);
         } else {
@@ -44,7 +61,7 @@ public class LogEntry {
         return dash2;
     }
 
-    public String getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
@@ -52,11 +69,15 @@ public class LogEntry {
         return request;
     }
 
-    public String getHttpCode() {
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
+
+    public int getHttpCode() {
         return httpCode;
     }
 
-    public String getBytes() {
+    public long getBytes() {
         return bytes;
     }
 
@@ -67,20 +88,23 @@ public class LogEntry {
     public String getUserAgent() {
         return userAgent;
     }
+
     @Override
     public String toString() {
         return "LogEntry{" +
                 "ip='" + ip + '\'' +
                 ", dash1='" + dash1 + '\'' +
                 ", dash2='" + dash2 + '\'' +
-                ", timestamp='" + timestamp + '\'' +
+                ", timestamp=" + timestamp +
                 ", request='" + request + '\'' +
-                ", httpCode='" + httpCode + '\'' +
-                ", bytes='" + bytes + '\'' +
+                ", httpMethod=" + httpMethod +
+                ", httpCode=" + httpCode +
+                ", bytes=" + bytes +
                 ", referer='" + referer + '\'' +
                 ", userAgent='" + userAgent + '\'' +
                 '}';
     }
+
     public String extractBotName() {
         String userAgent = this.userAgent;
         if (userAgent == null || userAgent.isEmpty()) {
