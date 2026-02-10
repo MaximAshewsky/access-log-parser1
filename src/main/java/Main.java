@@ -1,7 +1,8 @@
-import java.awt.*;
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -51,17 +52,17 @@ public class Main {
                     try {
                         LogEntry entry = new LogEntry(line);
                         stats.addEntry(entry);
-                        System.out.println("Строка " + totalLines + ":");
-                        System.out.println("  IP: " + entry.getIp());
-                        System.out.println("  Пропущенное поле 1: " + entry.getDash1());
-                        System.out.println("  Пропущенное поле 2: " + entry.getDash2());
-                        System.out.println("  Дата и время: " + entry.getTimestamp());
-                        System.out.println("  Запрос: " + entry.getRequest());
-                        System.out.println("  HTTP-код: " + entry.getHttpCode());
-                        System.out.println("  Размер (байты): " + entry.getBytes());
-                        System.out.println("  Referer: " + entry.getReferer());
-                        System.out.println("  User-Agent: " + entry.getUserAgent());
-                        System.out.println();
+//                        System.out.println("Строка " + totalLines + ":");
+//                        System.out.println("  IP: " + entry.getIp());
+//                        System.out.println("  Пропущенное поле 1: " + entry.getDash1());
+//                        System.out.println("  Пропущенное поле 2: " + entry.getDash2());
+//                        System.out.println("  Дата и время: " + entry.getTimestamp());
+//                        System.out.println("  Запрос: " + entry.getRequest());
+//                        System.out.println("  HTTP-код: " + entry.getHttpCode());
+//                        System.out.println("  Размер (байты): " + entry.getBytes());
+//                        System.out.println("  Referer: " + entry.getReferer());
+//                        System.out.println("  User-Agent: " + entry.getUserAgent());
+//                        System.out.println();
                         String botName = entry.extractBotName();
                         if (botName != null) {
                             totalBotChecks++;
@@ -75,7 +76,22 @@ public class Main {
                         System.err.println("Ошибка разбора строки " + totalLines + ": " + e.getMessage());
                     }
                 }
+                List<String> pages = stats.getExistingPages();
+                System.out.println("Существующие страницы (HTTP 200):");
+                if (pages.isEmpty()) {
+                    System.out.println("  Нет страниц с кодом 200");
+                } else {
+                    for (String page : pages) {
+                        System.out.println("  " + page);
+                    }
+                }
                 reader.close();
+                Map<String, Double> osStatic = stats.getOperatingSystemStats();
+                System.out.println("Статистика операционных систем:");
+
+                for (Map.Entry<String, Double> entry : osStatic.entrySet()) {
+                    System.out.printf("  %s: %.2f%%\n", entry.getKey(), entry.getValue() * 100);
+                }
                 System.out.println("Общее количество строк (запросов): " + totalLines);
                 System.out.println("Итого:");
                 System.out.println("Всего проанализировано User-Agent с потенциальными ботами: " + totalBotChecks);
@@ -89,6 +105,7 @@ public class Main {
                     System.out.printf("Доля запросов от YandexBot ко всем запросам: %.2f%%\n", yandexShare);
                 }
                 System.out.println("Средний трафик за час: " + stats.getTrafficRate() + " байт/час");
+
             } catch (RuntimeException ex) {
                 System.err.println("Ошибка: " + ex.getMessage());
                 return;

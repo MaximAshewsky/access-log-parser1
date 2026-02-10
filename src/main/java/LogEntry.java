@@ -7,7 +7,6 @@ public class LogEntry {
     public enum HttpMethod {
         GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, CONNECT
     }
-
     private final String ip;
     private final String dash1;
     private final String dash2;
@@ -126,5 +125,12 @@ public class LogEntry {
             return fragment;
         }
         return fragment.substring(0, slashIndex);
+    }
+    public String getRequestUrl() {
+        String[] parts = this.request.split("\\s+");
+        if (parts.length < 2) {
+            return "";
+        }
+        return parts[1];
     }
 }
