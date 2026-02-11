@@ -1,9 +1,12 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Введите текст и нажмите <Enter>:");
-        String text = new Scanner(System.in) .nextLine();
-        System.out.println("Длинна текста: " + text.length());
+        Stream<String> stream = Stream.of("Привет", "как", "дела");
+        String result = StreamToStringConverter.getStringFromStream(stream);
+        System.out.println(result);
     }
 }
