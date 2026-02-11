@@ -8,6 +8,8 @@ public class Statistics {
     private LocalDateTime maxTime;
     private final Set<String> existingPages = new HashSet<>();
     private final Map<String, Integer> osStatic = new HashMap<>();
+    private final Set<String> nonExistingPages = new HashSet<>();
+    private final Map<String, Integer> browserStatic = new HashMap<>();
 
     public Statistics() {
         this.totalTraffic = 0;
@@ -30,12 +32,38 @@ public class Statistics {
         if (entry.getHttpCode() == 200) {
             existingPages.add(entry.getRequestUrl());
         }
+        if (entry.getHttpCode() == 404) {
+            nonExistingPages.add(entry.getRequestUrl());
+        }
         String userAgentString = entry.getUserAgent();
-        UserAgent userAgent = new UserAgent(userAgentString);
-        UserAgent.OperatingSystem os = userAgent.getOs();
-        String osName = os.name();
-        osStatic.put(osName, osStatic.getOrDefault(osName, 0) + 1);
+        if (userAgentString != null && !userAgentString.isEmpty()) {
+            UserAgent userAgent = new UserAgent(userAgentString);
+
+            UserAgent.OperatingSystem os = userAgent.getOs();
+            String osName = os.name();
+            osStatic.put(osName, osStatic.getOrDefault(osName, 0) + 1);
+
+            UserAgent.Browser browser = userAgent.getBrowser();
+            String browserName = browser.name();
+            browserStatic.put(browserName, browserStatic.getOrDefault(browserName, 0) + 1);
+        }
     }
+    public Map<String, Double> getBrowserStats() {
+        Map<String, Double> browserStats = new HashMap<>();
+        int totalCount = browserStatic.values().stream().mapToInt(Integer::intValue).sum();
+
+        if (totalCount == 0) {
+            return Collections.unmodifiableMap(browserStats);
+        }
+
+        for (Map.Entry<String, Integer> entry : browserStatic.entrySet()) {
+            double proportion = (double) entry.getValue() / totalCount;
+            browserStats.put(entry.getKey(), proportion);
+        }
+
+        return Collections.unmodifiableMap(browserStats);
+    }
+
     public Map<String, Double> getOperatingSystemStats() {
         Map<String, Double> stats = new HashMap<>();
         int totalCount = osStatic.values().stream().mapToInt(Integer::intValue).sum();
@@ -53,6 +81,11 @@ public class Statistics {
     }
     public List<String> getExistingPages() {
         List<String> sorted = new ArrayList<>(existingPages);
+        Collections.sort(sorted);
+        return Collections.unmodifiableList(sorted);
+    }
+    public List<String> getNonExistingPages() {
+        List<String> sorted = new ArrayList<>(nonExistingPages);
         Collections.sort(sorted);
         return Collections.unmodifiableList(sorted);
     }

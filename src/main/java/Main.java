@@ -85,11 +85,26 @@ public class Main {
                         System.out.println("  " + page);
                     }
                 }
+                List<String> pages1 = stats.getNonExistingPages();
+                System.out.println("Страницы с кодом ответа 404:");
+                if (pages1.isEmpty()) {
+                    System.out.println("  Нет страниц с кодом 404");
+                } else {
+                    for (String page1 : pages1) {
+                        System.out.println("  " + page1);
+                    }
+                }
                 reader.close();
                 Map<String, Double> osStatic = stats.getOperatingSystemStats();
                 System.out.println("Статистика операционных систем:");
 
                 for (Map.Entry<String, Double> entry : osStatic.entrySet()) {
+                    System.out.printf("  %s: %.2f%%\n", entry.getKey(), entry.getValue() * 100);
+                }
+                Map<String, Double> browserStatic = stats.getBrowserStats();
+                System.out.println("Статистика браузеров:");
+
+                for (Map.Entry<String, Double> entry : browserStatic.entrySet()) {
                     System.out.printf("  %s: %.2f%%\n", entry.getKey(), entry.getValue() * 100);
                 }
                 System.out.println("Общее количество строк (запросов): " + totalLines);
