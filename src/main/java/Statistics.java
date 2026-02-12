@@ -10,6 +10,9 @@ public class Statistics {
     private final Map<String, Integer> osStatic = new HashMap<>();
     private final Set<String> nonExistingPages = new HashSet<>();
     private final Map<String, Integer> browserStatic = new HashMap<>();
+    private int userRequestsCount = 0;
+    private int errRequest = 0;
+    private final Set<String> userIps = new HashSet<>();
 
     public Statistics() {
         this.totalTraffic = 0;
@@ -35,6 +38,9 @@ public class Statistics {
         if (entry.getHttpCode() == 404) {
             nonExistingPages.add(entry.getRequestUrl());
         }
+        if (isErrorCode(entry.getHttpCode())) {
+            errRequest++;
+        }
         String userAgentString = entry.getUserAgent();
         if (userAgentString != null && !userAgentString.isEmpty()) {
             UserAgent userAgent = new UserAgent(userAgentString);
@@ -46,11 +52,22 @@ public class Statistics {
             UserAgent.Browser browser = userAgent.getBrowser();
             String browserName = browser.name();
             browserStatic.put(browserName, browserStatic.getOrDefault(browserName, 0) + 1);
+            if (!userAgent.isBot()) {
+                userRequestsCount++;
+                userIps.add(entry.getIp());
+            }
         }
     }
+
+    private boolean isErrorCode(int httpCode) {
+        return httpCode >= 400 && httpCode < 600;
+    }
+
     public Map<String, Double> getBrowserStats() {
         Map<String, Double> browserStats = new HashMap<>();
-        int totalCount = browserStatic.values().stream().mapToInt(Integer::intValue).sum();
+        int totalCount = browserStatic.values().stream()
+                .mapToInt(Integer::intValue)
+                .sum();
 
         if (totalCount == 0) {
             return Collections.unmodifiableMap(browserStats);
@@ -79,11 +96,13 @@ public class Statistics {
 
         return Collections.unmodifiableMap(stats);
     }
+
     public List<String> getExistingPages() {
         List<String> sorted = new ArrayList<>(existingPages);
         Collections.sort(sorted);
         return Collections.unmodifiableList(sorted);
     }
+
     public List<String> getNonExistingPages() {
         List<String> sorted = new ArrayList<>(nonExistingPages);
         Collections.sort(sorted);
@@ -100,6 +119,34 @@ public class Statistics {
             hours = 1;
         }
         return (double) this.totalTraffic / hours;
+    }
+
+    public double getAverageVisitsPerHour() {
+        if (this.minTime == null || this.maxTime == null) {
+            return 0.0;
+        }
+
+        Duration duration = Duration.between(this.minTime, this.maxTime);
+        long hours = Math.max(duration.toHours(), 1);
+
+        return (double) userRequestsCount / hours;
+    }
+
+    public double getAverageNumberOfErroneousRequestsPerHour() {
+        if (this.minTime == null || this.maxTime == null) {
+            return 0.0;
+        }
+
+        Duration duration = Duration.between(this.minTime, this.maxTime);
+        long hours = Math.max(duration.toHours(), 1);
+
+        return (double) errRequest / hours;
+    }
+    public double getAverageVisitsPerUser() {
+        if (userIps.isEmpty()) {
+            return 0.0;
+        }
+        return (double) userRequestsCount / userIps.size();
     }
 }
 

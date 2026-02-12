@@ -107,6 +107,12 @@ public class Main {
                 for (Map.Entry<String, Double> entry : browserStatic.entrySet()) {
                     System.out.printf("  %s: %.2f%%\n", entry.getKey(), entry.getValue() * 100);
                 }
+                System.out.println("Средняя посещаемость одним пользователем: " +
+                        String.format("%.2f", stats.getAverageVisitsPerUser()));
+                System.out.println("Среднее количество ошибочных запросов за час: " +
+                        String.format("%.2f", stats.getAverageNumberOfErroneousRequestsPerHour()));
+                System.out.println("Среднее количество посещений за час (не-боты): " +
+                        String.format("%.2f", stats.getAverageVisitsPerHour()));
                 System.out.println("Общее количество строк (запросов): " + totalLines);
                 System.out.println("Итого:");
                 System.out.println("Всего проанализировано User-Agent с потенциальными ботами: " + totalBotChecks);

@@ -1,7 +1,3 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class UserAgent {
     public enum OperatingSystem {
@@ -48,6 +44,9 @@ public class UserAgent {
 
     public Browser getBrowser() {
         return browser;
+    }
+    public boolean isBot() {
+        return this.toString().toLowerCase().contains("bot");
     }
 
     @Override
