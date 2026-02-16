@@ -5,8 +5,9 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        Stream<String> stream = Stream.of("Привет", "как", "дела");
-        String result = StreamToStringConverter.getStringFromStream(stream);
-        System.out.println(result);
+        Cat cat = new Cat("Vasya", 10, new ArrayList<>(Arrays.asList("Anton", "Oleg", "Igor")));
+        System.out.println(cat);
+        Nullifier.nullifyFields(cat);
+        System.out.println("После обнуления: " + cat);
     }
 }
