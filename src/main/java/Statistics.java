@@ -1,6 +1,7 @@
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Statistics {
     private int totalTraffic;
@@ -13,6 +14,9 @@ public class Statistics {
     private int userRequestsCount = 0;
     private int errRequest = 0;
     private final Set<String> userIps = new HashSet<>();
+    private final Map<LocalDateTime, Integer> visitsPerSecond = new HashMap<>();
+    private final Set<String> listOfSites = new HashSet<>();
+    private final Map<String, Integer> ipVisits = new HashMap<>();
 
     public Statistics() {
         this.totalTraffic = 0;
@@ -54,14 +58,64 @@ public class Statistics {
             browserStatic.put(browserName, browserStatic.getOrDefault(browserName, 0) + 1);
             if (!userAgent.isBot()) {
                 userRequestsCount++;
-                userIps.add(entry.getIp());
+                String ip = entry.getIp();
+                userIps.add(ip);
+                ipVisits.merge(ip, 1, Integer::sum);
+                String referer = entry.getReferer();
+                if (referer != null && !referer.isEmpty() && !referer.equals("-")) {
+                    String domain = extractDomain(referer);
+                    if (domain != null && !domain.isEmpty()) {
+                        listOfSites.add(domain);
+                    }
+                }
+
+                LocalDateTime second = currentTime.withNano(0);
+                visitsPerSecond.merge(second, 1, Integer::sum);
             }
+        }
+    }
+
+    private String extractDomain(String url) {
+        try {
+            url = url.replaceFirst("https?://", "");
+            int slashIndex = url.indexOf('/');
+            if (slashIndex != -1) {
+                url = url.substring(0, slashIndex);
+            }
+            int portIndex = url.indexOf(':');
+            if (portIndex != -1) {
+                url = url.substring(0, portIndex);
+            }
+            return url;
+        } catch (Exception e) {
+            return null;
         }
     }
 
     private boolean isErrorCode(int httpCode) {
         return httpCode >= 400 && httpCode < 600;
     }
+
+    public int getPeakVisitsPerSecond() {
+        return visitsPerSecond.values().stream()
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(0);
+    }
+
+    public List<String> getReferringSites() {
+        return listOfSites.stream()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public int getMaxVisitsPerUser() {
+        return ipVisits.values().stream()
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(0);
+    }
+
 
     public Map<String, Double> getBrowserStats() {
         Map<String, Double> browserStats = new HashMap<>();
@@ -142,6 +196,7 @@ public class Statistics {
 
         return (double) errRequest / hours;
     }
+
     public double getAverageVisitsPerUser() {
         if (userIps.isEmpty()) {
             return 0.0;

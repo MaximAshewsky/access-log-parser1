@@ -107,6 +107,10 @@ public class Main {
                 for (Map.Entry<String, Double> entry : browserStatic.entrySet()) {
                     System.out.printf("  %s: %.2f%%\n", entry.getKey(), entry.getValue() * 100);
                 }
+                int maxVisits = stats.getMaxVisitsPerUser();
+                System.out.println("Максимальная посещаемость одним пользователем: " + maxVisits);
+                int peak = stats.getPeakVisitsPerSecond();
+                System.out.println("Пиковая посещаемость (посещений в секунду): " + peak);
                 System.out.println("Средняя посещаемость одним пользователем: " +
                         String.format("%.2f", stats.getAverageVisitsPerUser()));
                 System.out.println("Среднее количество ошибочных запросов за час: " +
@@ -124,6 +128,15 @@ public class Main {
                     double yandexShare = (double) yandexBotCount / totalLines * 100;
                     System.out.printf("Доля запросов от Googlebot ко всем запросам: %.2f%%\n", googleShare);
                     System.out.printf("Доля запросов от YandexBot ко всем запросам: %.2f%%\n", yandexShare);
+                }
+                List<String> referrers = stats.getReferringSites();
+                if (referrers.isEmpty()) {
+                    System.out.println("  Нет данных о реферерах");
+                } else {
+                    System.out.println("Список доменов, с которых были переходы:");
+                    for (String referrer : referrers) {
+                        System.out.println("  " + referrer);
+                    }
                 }
                 System.out.println("Средний трафик за час: " + stats.getTrafficRate() + " байт/час");
 
